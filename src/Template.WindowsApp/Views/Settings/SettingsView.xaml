@@ -1,0 +1,57 @@
+<UserControl xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:module="using:Template.WindowsApp.Views.Settings"
+             xmlns:sr="using:Smart.WinUI.Resolver"
+             x:Class="Template.WindowsApp.Views.Settings.SettingsView"
+             sr:DataContextResolver.Type="module:SettingsViewModel">
+
+    <!-- Content -->
+
+    <ScrollViewer Style="{StaticResource RootScroll}">
+        <StackPanel Style="{StaticResource PageStack}">
+
+            <!-- Header -->
+
+            <TextBlock Style="{StaticResource PageTitleTextBlock}"
+                       Text="Settings" />
+            <TextBlock Style="{StaticResource PageDescriptionTextBlock}"
+                       Text="Application settings and information." />
+
+            <!-- About -->
+
+            <TextBlock Style="{StaticResource SectionHeaderTextBlock}"
+                       Text="About" />
+            <Grid Style="{StaticResource PropertyGrid}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" Grid.Column="0"
+                           Style="{StaticResource PropertyNameTextBlock}"
+                           Text="Version" />
+                <TextBlock Grid.Row="0" Grid.Column="1"
+                           Style="{StaticResource PropertyValueTextBlock}"
+                           Text="{x:Bind ViewModel.Version}" />
+                <TextBlock Grid.Row="1" Grid.Column="0"
+                           Style="{StaticResource PropertyNameTextBlock}"
+                           Text=".NET" />
+                <TextBlock Grid.Row="1" Grid.Column="1"
+                           Style="{StaticResource PropertyValueTextBlock}"
+                           Text="{x:Bind ViewModel.Framework}" />
+                <TextBlock Grid.Row="2" Grid.Column="0"
+                           Style="{StaticResource PropertyNameTextBlock}"
+                           Text="OS" />
+                <TextBlock Grid.Row="2" Grid.Column="1"
+                           Style="{StaticResource PropertyValueTextBlock}"
+                           Text="{x:Bind ViewModel.OperatingSystem}" />
+            </Grid>
+
+        </StackPanel>
+    </ScrollViewer>
+
+</UserControl>

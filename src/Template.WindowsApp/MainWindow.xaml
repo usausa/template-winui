@@ -1,0 +1,56 @@
+<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:shell="using:Template.WindowsApp.Shell"
+        x:Class="Template.WindowsApp.MainWindow"
+        Title="Template">
+
+    <Window.SystemBackdrop>
+        <MicaBackdrop />
+    </Window.SystemBackdrop>
+
+    <!-- Content -->
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Title bar -->
+
+        <TitleBar x:Name="AppTitleBar"
+                  Grid.Row="0"
+                  Title="Template">
+            <TitleBar.IconSource>
+                <ImageIconSource ImageSource="ms-appx:///App.ico" />
+            </TitleBar.IconSource>
+        </TitleBar>
+
+        <!-- Navigation -->
+
+        <NavigationView Grid.Row="1"
+                        SelectedItem="{x:Bind ViewModel.SelectedItem, Mode=TwoWay}"
+                        FooterMenuItemsSource="{x:Bind ViewModel.Menu.FooterItems}"
+                        IsBackButtonVisible="Collapsed" IsSettingsVisible="False"
+                        MenuItemsSource="{x:Bind ViewModel.Menu.Items}">
+            <NavigationView.MenuItemTemplate>
+                <DataTemplate x:DataType="shell:NavigationItem">
+                    <NavigationViewItem Content="{x:Bind Title}">
+                        <NavigationViewItem.Icon>
+                            <FontIcon Glyph="{x:Bind Glyph}" />
+                        </NavigationViewItem.Icon>
+                    </NavigationViewItem>
+                </DataTemplate>
+            </NavigationView.MenuItemTemplate>
+
+            <Grid shell:NavigationContainer.Navigator="{x:Bind ViewModel.Navigator}">
+                <Grid.ChildrenTransitions>
+                    <TransitionCollection>
+                        <EntranceThemeTransition />
+                    </TransitionCollection>
+                </Grid.ChildrenTransitions>
+            </Grid>
+        </NavigationView>
+    </Grid>
+
+</Window>

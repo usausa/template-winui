@@ -1,0 +1,28 @@
+<UserControl xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:module="using:Template.WindowsApp.Views.Home"
+             xmlns:sr="using:Smart.WinUI.Resolver"
+             x:Class="Template.WindowsApp.Views.Home.HomeView"
+             sr:DataContextResolver.Type="module:HomeViewModel">
+
+    <!-- Content -->
+
+    <ScrollViewer Style="{StaticResource RootScroll}">
+        <StackPanel Style="{StaticResource PageStack}">
+
+            <!-- Header -->
+
+            <TextBlock Style="{StaticResource PageTitleTextBlock}"
+                       Text="Home" />
+            <TextBlock Style="{StaticResource PageDescriptionTextBlock}"
+                       Text="Template project for WinUI." />
+
+            <!-- Greet -->
+
+            <Button Command="{x:Bind ViewModel.GreetCommand}"
+                    Content="Greet" />
+
+        </StackPanel>
+    </ScrollViewer>
+
+</UserControl>

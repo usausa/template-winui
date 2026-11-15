@@ -218,7 +218,7 @@
   "ReorderSetters": 0,
   "FormatMarkupExtension": true,
   "NoNewLineMarkupExtensions": "
-    Binding, TemplateBinding,
+    Binding, TemplateBinding, x:Bind,
     s:BoolToBrush, s:BoolToColor, s:BoolToText, s:BoolToVisibility,
     s:ColorBlend,
     s:CompareToBool, s:CompareToBrush, s:CompareToColor, s:CompareToText, s:CompareToVisibility,
