@@ -45,6 +45,7 @@ public sealed partial class Dialog : IDialog, IDisposable
             var dialog = new ContentDialog
             {
                 XamlRoot = root,
+                RequestedTheme = (root.Content as FrameworkElement)?.RequestedTheme ?? ElementTheme.Default,
                 Style = (Style)Application.Current.Resources["DefaultContentDialogStyle"],
                 Title = title,
                 Content = new TextBlock

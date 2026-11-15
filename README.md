@@ -6,8 +6,9 @@
 
 | Category | Feature |
 | --- | --- |
-| Window | Title bar / Mica / Window size and placement |
+| Window | Title bar (pane toggle) / Mica / Theme (Light / Dark / System) / Window placement / Tray icon |
 | Shell | Navigation view |
+| App | Single instance |
 | Basic | Navigation / Dialog (ContentDialog) / Error dialog / Setting / Logging / DI (source generator) / Leak detection / Unit tests |
 
 # 🔗 Related Projects

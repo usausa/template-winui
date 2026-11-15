@@ -17,6 +17,18 @@
             <TextBlock Style="{StaticResource PageDescriptionTextBlock}"
                        Text="Application settings and information." />
 
+            <!-- Appearance -->
+
+            <TextBlock Style="{StaticResource SectionHeaderTextBlock}"
+                       Text="Appearance" />
+            <RadioButtons Margin="0,0,0,24"
+                          Header="Theme"
+                          SelectedIndex="{x:Bind ViewModel.ThemeIndex, Mode=TwoWay}">
+                <x:String>Light</x:String>
+                <x:String>Dark</x:String>
+                <x:String>Use system setting</x:String>
+            </RadioButtons>
+
             <!-- About -->
 
             <TextBlock Style="{StaticResource SectionHeaderTextBlock}"

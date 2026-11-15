@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.UI.Dispatching;
+using Microsoft.Windows.AppLifecycle;
 
 using Smart.Mvvm.Resolver;
 using Smart.Threading;
@@ -15,9 +16,13 @@ using Template.WindowsApp.Views;
 
 public sealed partial class App
 {
+    private readonly DispatcherQueue dispatcherQueue;
+
     private readonly IHost host;
 
     private readonly ILogger<App> log;
+
+    private readonly IWindowManager windowManager;
 
     private IDialog? dialog;
 
@@ -32,13 +37,15 @@ public sealed partial class App
         InitializeComponent();
 
         DispatcherShutdownMode = DispatcherShutdownMode.OnExplicitShutdown;
-        SynchronizationContext.SetSynchronizationContext(new ExceptionHandlingSynchronizationContext(DispatcherQueue.GetForCurrentThread(), HandleException));
+        dispatcherQueue = DispatcherQueue.GetForCurrentThread();
+        SynchronizationContext.SetSynchronizationContext(new ExceptionHandlingSynchronizationContext(dispatcherQueue, HandleException));
 
         Directory.SetCurrentDirectory(AppContext.BaseDirectory);
 
         host = CreateHost();
 
         log = host.Services.GetRequiredService<ILogger<App>>();
+        windowManager = host.Services.GetRequiredService<IWindowManager>();
         ResolveProvider.Default.Provider = host.Services;
 
         var environment = host.Services.GetRequiredService<IHostEnvironment>();
@@ -54,6 +61,7 @@ public sealed partial class App
         UnhandledException += (_, ea) => ea.Handled = HandleException(ea.Exception);
         AppDomain.CurrentDomain.UnhandledException += (_, ea) => log.ErrorUnknownException((Exception)ea.ExceptionObject);
         TaskScheduler.UnobservedTaskException += (_, ea) => log.ErrorUnobservedTaskException(ea.Exception);
+        AppInstance.GetCurrent().Activated += OnActivated;
     }
 
     private static IHost CreateHost()
@@ -95,7 +103,7 @@ public sealed partial class App
     // ReSharper disable once AsyncVoidMethod
     protected override async void OnLaunched(LaunchActivatedEventArgs args)
     {
-        var window = host.Services.GetRequiredService<MainWindow>();
+        var window = windowManager.Load();
         host.Services.GetRequiredService<DialogHost>().Attach(window);
         dialog = host.Services.GetRequiredService<IDialog>();
         window.Closed += OnMainWindowClosed;
@@ -109,6 +117,7 @@ public sealed partial class App
     // ReSharper disable once AsyncVoidMethod
     private async void OnMainWindowClosed(object sender, WindowEventArgs args)
     {
+        windowManager.Save();
         dialog = null;
         try
         {
@@ -119,6 +128,21 @@ public sealed partial class App
             host.Dispose();
             Exit();
         }
+    }
+
+    //--------------------------------------------------------------------------------
+    // Instance
+    //--------------------------------------------------------------------------------
+
+    private void OnActivated(object? sender, AppActivationArguments args)
+    {
+        _ = dispatcherQueue.TryEnqueue(() => OnSecondInstance(args));
+    }
+
+    private void OnSecondInstance(AppActivationArguments args)
+    {
+        log.InfoSecondInstance(args.Data is Windows.ApplicationModel.Activation.ILaunchActivatedEventArgs launch ? launch.Arguments : args.Kind.ToString());
+        windowManager.Activate();
     }
 
     //--------------------------------------------------------------------------------

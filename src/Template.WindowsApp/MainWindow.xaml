@@ -1,6 +1,8 @@
 <Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:i="using:Microsoft.Xaml.Interactivity"
         xmlns:shell="using:Template.WindowsApp.Shell"
+        xmlns:si="using:Smart.WinUI.Interactivity"
         x:Class="Template.WindowsApp.MainWindow"
         Title="Template">
 
@@ -11,6 +13,9 @@
     <!-- Content -->
 
     <Grid>
+        <i:Interaction.Behaviors>
+            <si:MinimizedToHideBehavior />
+        </i:Interaction.Behaviors>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
@@ -20,7 +25,8 @@
 
         <TitleBar x:Name="AppTitleBar"
                   Grid.Row="0"
-                  Title="Template">
+                  Title="Template"
+                  IsPaneToggleButtonVisible="True">
             <TitleBar.IconSource>
                 <ImageIconSource ImageSource="ms-appx:///App.ico" />
             </TitleBar.IconSource>
@@ -28,10 +34,11 @@
 
         <!-- Navigation -->
 
-        <NavigationView Grid.Row="1"
+        <NavigationView x:Name="Navigation"
+                        Grid.Row="1"
                         SelectedItem="{x:Bind ViewModel.SelectedItem, Mode=TwoWay}"
                         FooterMenuItemsSource="{x:Bind ViewModel.Menu.FooterItems}"
-                        IsBackButtonVisible="Collapsed" IsSettingsVisible="False"
+                        IsBackButtonVisible="Collapsed" IsPaneToggleButtonVisible="False" IsSettingsVisible="False"
                         MenuItemsSource="{x:Bind ViewModel.Menu.Items}">
             <NavigationView.MenuItemTemplate>
                 <DataTemplate x:DataType="shell:NavigationItem">

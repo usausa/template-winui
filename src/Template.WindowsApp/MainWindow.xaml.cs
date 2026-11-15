@@ -22,6 +22,12 @@ public sealed partial class MainWindow
 
     public MainWindowViewModel ViewModel { get; }
 
+    public bool IsPaneOpen
+    {
+        get => Navigation.IsPaneOpen;
+        set => Navigation.IsPaneOpen = value;
+    }
+
     public MainWindow(MainWindowViewModel viewModel)
     {
         ViewModel = viewModel;
@@ -30,6 +36,7 @@ public sealed partial class MainWindow
 
         ExtendsContentIntoTitleBar = true;
         SetTitleBar(AppTitleBar);
+        AppTitleBar.PaneToggleRequested += (_, _) => Navigation.IsPaneOpen = !Navigation.IsPaneOpen;
         AppWindow.SetIcon(Path.Combine(AppContext.BaseDirectory, "App.ico"));
 
         var scale = NativeMethods.GetDpiForWindow(WindowNative.GetWindowHandle(this)) / 96d;
