@@ -1,5 +1,6 @@
 namespace Template.WindowsApp;
 
+using Template.WindowsApp.Extender;
 using Template.WindowsApp.Shell;
 using Template.WindowsApp.Views;
 
@@ -24,7 +25,7 @@ public sealed partial class MainWindowViewModel : ExtendViewModelBase
             .Subscribe(x => SelectedItem = x.EventArgs.Context.ToId is ViewId id ? menu.Find(id) : null));
         Disposables.Add(ObserveSelectedItem()
             .Where(x => (x is not null) && !Equals(navigator.CurrentViewId, x.Id))
-            .Select(x => Observable.FromAsync(() => navigator.ForwardAsync(x!.Id)))
+            .Select(x => Observable.FromAsync(() => navigator.ForwardAsync(x!.Id, new NavigationParameter().WithEffect(EntranceEffect.Name))))
             .Concat()
             .Subscribe());
     }

@@ -27,3 +27,4 @@
 | [Usa.Smart.Navigation](https://github.com/usausa/Smart-Net-Navigation) | Navigation |
 | [Usa.Smart.WinUI](https://github.com/usausa/Smart-Net-WinUI) | WinUI MVVM helpers |
 | [BunnyTail.DependencyInjection](https://github.com/usausa/bunnytail-dependency-injection) | Source generator based DI |
+| [BunnyTail.XamlProperty.WinUI](https://github.com/usausa/bunnytail-xaml-property) | DependencyProperty generator |

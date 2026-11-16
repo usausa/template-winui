@@ -1,5 +1,6 @@
 <Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:navigation="using:Smart.Navigation"
         xmlns:i="using:Microsoft.Xaml.Interactivity"
         xmlns:shell="using:Template.WindowsApp.Shell"
         xmlns:si="using:Smart.WinUI.Interactivity"
@@ -50,13 +51,7 @@
                 </DataTemplate>
             </NavigationView.MenuItemTemplate>
 
-            <Grid shell:NavigationContainer.Navigator="{x:Bind ViewModel.Navigator}">
-                <Grid.ChildrenTransitions>
-                    <TransitionCollection>
-                        <EntranceThemeTransition />
-                    </TransitionCollection>
-                </Grid.ChildrenTransitions>
-            </Grid>
+            <Grid navigation:NavigationContainer.Navigator="{x:Bind ViewModel.Navigator}" />
         </NavigationView>
     </Grid>
 

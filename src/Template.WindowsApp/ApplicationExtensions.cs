@@ -9,6 +9,7 @@ using Microsoft.Extensions.Options;
 using Serilog;
 
 using Template.WindowsApp.Components;
+using Template.WindowsApp.Extender;
 using Template.WindowsApp.Settings;
 using Template.WindowsApp.Shell;
 using Template.WindowsApp.Views;
@@ -58,9 +59,9 @@ public static partial class ApplicationExtensions
         // Navigation
         builder.Services.AddNavigator(static (_, config) =>
         {
-            config.UseWinUINavigationProvider();
+            config.UseWinUINavigationProvider(static options => options.RegisterEffect<EntranceEffect>(EntranceEffect.Name));
 #if DEBUG
-            config.AddPlugin<Extender.LeakDetectionPlugin>();
+            config.AddPlugin<LeakDetectionPlugin>();
 #endif
             config.UseIdViewMapper(static m => m.AutoRegister(ViewSource()));
         });

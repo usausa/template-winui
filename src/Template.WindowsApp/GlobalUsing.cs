@@ -17,6 +17,8 @@ global using System.Text;
 global using System.Threading;
 global using System.Threading.Tasks;
 
+global using BunnyTail.XamlProperty;
+
 global using Microsoft.Extensions.Logging;
 global using Microsoft.UI.Xaml;
 
