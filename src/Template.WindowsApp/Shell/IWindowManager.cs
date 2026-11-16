@@ -1,9 +1,14 @@
 namespace Template.WindowsApp.Shell;
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.UI;
+using Microsoft.UI.System;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using Microsoft.Windows.Storage;
+
+using Windows.UI;
 
 public enum AppTheme
 {
@@ -35,6 +40,8 @@ public sealed partial class WindowManager : IWindowManager, IDisposable
 
     private MainWindow? mainWindow;
 
+    private ThemeSettings? themeSettings;
+
     public AppTheme Theme
     {
         get;
@@ -63,6 +70,12 @@ public sealed partial class WindowManager : IWindowManager, IDisposable
     {
         var window = provider.GetRequiredService<MainWindow>();
         mainWindow = window;
+        if (window.Content is FrameworkElement root)
+        {
+            root.ActualThemeChanged += (_, _) => UpdateCaptionButtons(window);
+        }
+        themeSettings = ThemeSettings.CreateForWindowId(window.AppWindow.Id);
+        themeSettings.Changed += (_, _) => window.DispatcherQueue.TryEnqueue(() => UpdateCaptionButtons(window));
 
         var values = data.LocalSettings.Values;
         window.IsPaneOpen = !values.TryGetValue(PaneOpenKey, out var paneOpen) || (paneOpen is true);
@@ -136,7 +149,65 @@ public sealed partial class WindowManager : IWindowManager, IDisposable
             AppTheme.Dark => TitleBarTheme.Dark,
             _ => TitleBarTheme.UseDefaultAppMode
         };
+        UpdateCaptionButtons(window);
     }
+
+    private void UpdateCaptionButtons(MainWindow window)
+    {
+        var titleBar = window.AppWindow.TitleBar;
+        if (themeSettings is { HighContrast: true })
+        {
+            titleBar.ButtonBackgroundColor = null;
+            titleBar.ButtonInactiveBackgroundColor = null;
+            titleBar.ButtonHoverBackgroundColor = null;
+            titleBar.ButtonPressedBackgroundColor = null;
+            titleBar.ButtonForegroundColor = null;
+            titleBar.ButtonHoverForegroundColor = null;
+            titleBar.ButtonPressedForegroundColor = null;
+            titleBar.ButtonInactiveForegroundColor = null;
+            return;
+        }
+
+        var dark = window.Content is FrameworkElement { ActualTheme: ElementTheme.Dark };
+        var baseColor = dark ? Colors.White : Colors.Black;
+        var background = CaptionColor("WindowCaptionButtonBackground", baseColor);
+        var foreground = CaptionColor("WindowCaptionForeground", baseColor);
+        titleBar.ButtonBackgroundColor = background;
+        titleBar.ButtonInactiveBackgroundColor = background;
+        titleBar.ButtonHoverBackgroundColor = CaptionColor("WindowCaptionButtonBackgroundPointerOver", baseColor);
+        titleBar.ButtonPressedBackgroundColor = CaptionColor("WindowCaptionButtonBackgroundPressed", baseColor);
+        titleBar.ButtonForegroundColor = foreground;
+        titleBar.ButtonHoverForegroundColor = foreground;
+        titleBar.ButtonPressedForegroundColor = foreground;
+        titleBar.ButtonInactiveForegroundColor = Compose(CaptionColor("WindowCaptionForegroundDisabled", baseColor), ThemeColor("SolidBackgroundFillColorBase", dark));
+    }
+
+    private static Color CaptionColor(string key, Color baseColor)
+    {
+        var alpha = Application.Current.Resources.TryGetValue(key, out var value) && (value is SolidColorBrush brush) ? brush.Color.A : byte.MaxValue;
+        return Color.FromArgb(alpha, baseColor.R, baseColor.G, baseColor.B);
+    }
+
+    private static Color ThemeColor(string key, bool dark)
+    {
+        var theme = dark ? "Default" : "Light";
+        foreach (var dictionary in Application.Current.Resources.MergedDictionaries)
+        {
+            if (dictionary.ThemeDictionaries.TryGetValue(theme, out var value) && (value is ResourceDictionary resources) && resources.TryGetValue(key, out var color) && (color is Color result))
+            {
+                return result;
+            }
+        }
+        return Colors.Transparent;
+    }
+
+    private static Color Compose(Color foreground, Color background)
+    {
+        var alpha = foreground.A / 255d;
+        return Color.FromArgb(byte.MaxValue, Mix(foreground.R, background.R, alpha), Mix(foreground.G, background.G, alpha), Mix(foreground.B, background.B, alpha));
+    }
+
+    private static byte Mix(byte foreground, byte background, double alpha) => (byte)Math.Round(background + ((foreground - background) * alpha));
 
     private MenuFlyout CreateTrayMenu(MainWindow window)
     {
