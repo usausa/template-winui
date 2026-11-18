@@ -9,7 +9,6 @@
     <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
     <CsWinRTAotOptimizerEnabled>false</CsWinRTAotOptimizerEnabled>
     <RootNamespace>Template.WindowsApp</RootNamespace>
-    <CodeAnalysisRuleSet>..\..\Analyzers.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
   <PropertyGroup>
